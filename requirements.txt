@@ -1,0 +1,30 @@
+# Configuration & data
+PyYAML
+pandas
+numpy
+
+# Protein / chemistry
+biopython
+rdkit
+meeko
+openbabel-wheel
+freesasa
+mdtraj
+openmm
+pdbfixer
+scipy
+
+# Machine learning
+scikit-learn
+xgboost
+shap
+matplotlib
+
+# API / inference
+fastapi
+uvicorn[standard]
+pydantic
+
+# Testing
+pytest
+httpx

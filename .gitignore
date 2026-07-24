@@ -1,0 +1,38 @@
+# Bytecode / caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environments
+.env
+.venv/
+venv/
+
+# Data artifacts (keep directory structure via .gitkeep)
+data/raw/*
+!data/raw/.gitkeep
+data/mutants/*
+!data/mutants/.gitkeep
+data/docking/*
+!data/docking/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Trained models and generated outputs
+models/*
+!models/.gitkeep
+outputs/metrics/*
+!outputs/metrics/.gitkeep
+outputs/figures/*
+!outputs/figures/.gitkeep
+outputs/reports/*
+!outputs/reports/.gitkeep
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
