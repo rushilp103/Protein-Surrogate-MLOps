@@ -6,7 +6,13 @@
 
 **Motivation:** Molecular docking estimates protein–ligand interactions but is a computationally heavy process. The traditional workflow requires generating a structure, running a docking simulation, and obtaining a score for *every* candidate mutation. This project replaces that bottleneck with an XGBoost surrogate model that predicts AutoDock Vina scores instantly based on precomputed structural and biochemical features.
 
-**Environment requirement:** All terminal commands for this project must run inside the active `protein` conda environment. Do not use the system Python, another conda env, or a separate `venv`.
+**Environment requirement:** All terminal commands for this project **must** run under an activated `protein` conda environment. Do not use the system Python, another conda env, a separate `venv`, or a bare path to `python.exe` without activation.
+
+```bash
+conda activate protein
+```
+
+Activation is required (not optional): it puts the env on `PATH`, including `Library/bin` (e.g. `libiomp5md.dll` for MKL/OpenMM/NumPy). Skipping activation can cause native DLL load failures on Windows. After activating, run all `python`, `pytest`, and pipeline commands in that same shell.
 
 **Repository:** GitHub repo is already set up at [https://github.com/rushilp103/Protein-Surrogate-ML](https://github.com/rushilp103/Protein-Surrogate-ML).
 
@@ -186,8 +192,11 @@ protein-surrogate/
 
 - **Action Items:**
   1. Update `configs/egfr.yaml` to include 50–200 mutations.
-  2. Run the offline pipeline overnight to compute the full `features.csv` and train the final model.
-  3. Update `README.md` with explicit instructions on running the data generation pipeline vs. spinning up the Dockerized API.
+  2. Re-enable data splitting: Remove the dry-run logic (training and predicting on the same data). Re-implement the K-Fold Cross Validation to properly evaluate the model on unseen data.
+  3. Uncap model hyperparameters: Remove the remporary micro-dataset constraints (max_depth=2, n_estimators=10). Implement GridSearchCV to find optimal parameters for the macro-dataset (e.g., testing max_depth 4-6, n_estimators 100-300).
+  4. Preserve mutation index: Modify the pandas preprocessing so it no longer does the mutation column. Instead, use X = X.set_index('mutation') (and drop wt_aa, mut_aa). This keeps the matrix strictly numeric for XGBoost while allowing us to track which prediction belongs to which mutant in the final output table.
+  5. Run the offline pipeline overnight to compute the full `features.csv` and train the final model.
+  6. Update `README.md` with explicit instructions on running the data generation pipeline vs. spinning up the Dockerized API.
 
 ---
 

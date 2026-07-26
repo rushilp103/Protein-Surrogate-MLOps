@@ -1,12 +1,17 @@
-# Protein-Surrogate-ML — inference image (filled in Step 6)
-# Offline FoldX / AutoDock Vina tooling is intentionally excluded.
+# Inference image — FastAPI + XGBoost only.
+# Offline physics tooling (OpenMM, AutoDock Vina, RDKit, FreeSASA) is excluded.
 
 FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    MODEL_PATH=/app/models/xgboost_model.pkl \
+    FEATURES_PATH=/app/data/processed/features.csv
+
+COPY requirements-api.txt .
+RUN pip install --no-cache-dir -r requirements-api.txt
 
 COPY src/ ./src/
 COPY configs/ ./configs/

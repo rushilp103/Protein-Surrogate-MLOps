@@ -30,6 +30,12 @@ outputs/figures/*
 !outputs/figures/.gitkeep
 outputs/reports/*
 !outputs/reports/.gitkeep
+outputs/logs/*
+!outputs/logs/.gitkeep
+
+# Local AutoDock Vina binary (download from GitHub releases)
+tools/vina
+tools/vina.exe
 
 # OS / IDE
 .DS_Store

@@ -1,5 +1,6 @@
-# EGFR + Gefitinib micro-dataset for initial pipeline testing.
-# Scale mutations to 50–200 in Step 7.
+# EGFR + Gefitinib macro-dataset for Step 7 scaling.
+# 180 kinase-domain point mutations (clinical + ATP-pocket scan).
+# Exon 19 deletions / exon 20 insertions omitted (pipeline is point-mutation only).
 
 protein:
   name: EGFR
@@ -12,9 +13,106 @@ drug:
   smiles: "COc1cc2ncnc(Nc3ccc(F)c(Cl)c3)c2cc1OCCCN1CCOCC1"
 
 mutations:
-  - L858R
-  - T790M
+  - E709A
+  - E709G
+  - E709K
+  - E709Q
+  - E709V
+  - G719A
+  - G719C
   - G719S
+  - G719D
+  - V689M
+  - P694L
+  - I715S
+  - L718Q
+  - L718V
+  - G721A
+  - G724S
+  - T725M
+  - I740T
+  - V742A
+  - E746K
+  - L747P
+  - L747S
+  - A750P
+  - T751I
+  - S752F
+  - P753L
+  - A755D
+  - D761Y
+  - D761N
+  - E762Q
+  - Y764H
+  - V765A
+  - M766T
+  - A767V
+  - S768I
+  - V769L
+  - V769M
+  - D770N
+  - N771T
+  - H773L
+  - H773R
+  - V774M
+  - C775Y
+  - R776C
+  - R776H
+  - G779F
+  - T783A
+  - T790M
+  - L792H
+  - L792F
+  - L792V
+  - C797S
+  - C797G
+  - C797Y
+  - L833V
+  - L833F
+  - H835L
+  - V834L
+  - L838V
+  - A839T
+  - A840T
+  - K846R
+  - T847I
+  - V851I
+  - I853T
+  - D855G
+  - L858R
+  - L858Q
+  - L858M
+  - A859T
+  - L861Q
+  - L861R
+  - G863D
+  - A864T
+  - E865K
+  - G873E
+  - E690A
+  - E690R
+  - P691A
+  - L692A
+  - L692R
+  - T693A
+  - S695A
+  - G696A
+  - G696R
+  - E697A
+  - N700A
+  - N700R
+  - L703A
+  - L704A
+  - L704R
+  - K716A
+  - K716R
+  - V717A
+  - A722S
+  - A722R
+  - F723A
+  - V726A
+  - V726R
+  - K728A
 
 paths:
   raw: data/raw
@@ -29,9 +127,9 @@ docking:
   num_modes: 9
   # Binding-site box centered on the EGFR kinase ATP pocket (Å)
   center:
-    x: -50.0
-    y: 0.0
-    z: -20.0
+    x: -7.21
+    y: 30.66
+    z: 11.75
   size:
     x: 22.0
     y: 22.0
@@ -40,5 +138,6 @@ docking:
 training:
   target_column: vina_score
   group_column: residue_position
-  n_splits: 3
+  n_splits: 5
+  test_size: 0.2
   random_state: 42

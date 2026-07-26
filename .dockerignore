@@ -1,0 +1,26 @@
+.git
+.cursor
+.pytest_cache
+__pycache__
+*.py[cod]
+*.egg-info
+.mypy_cache
+.ruff_cache
+.venv
+venv
+.env
+
+# Offline / heavy artifacts — not needed in the inference image
+data/raw
+data/mutants
+data/docking
+outputs
+tools
+notebooks
+tests
+find_center.py
+view_pocket.pml
+project.md
+
+# Full offline requirements (physics stack); image uses requirements-api.txt
+requirements.txt

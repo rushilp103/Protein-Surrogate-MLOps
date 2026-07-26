@@ -16,7 +16,9 @@ def test_egfr_yaml_loads_successfully():
 
     assert config["protein"]["name"] == "EGFR"
     assert config["drug"]["name"] == "Gefitinib"
-    assert config["mutations"] == ["L858R", "T790M", "G719S"]
+    assert isinstance(config["mutations"], list)
+    assert 50 <= len(config["mutations"]) <= 200
+    assert {"L858R", "T790M", "G719S"} <= set(config["mutations"])
     assert set(config["paths"]) >= {
         "raw",
         "mutants",
