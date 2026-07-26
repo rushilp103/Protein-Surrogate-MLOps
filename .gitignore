@@ -48,3 +48,4 @@ tools/*.exe
 
 # Cursor AI / IDE Configs
 .cursor/
+.cursorrules
