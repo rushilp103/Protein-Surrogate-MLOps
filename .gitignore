@@ -34,17 +34,13 @@ outputs/logs/*
 !outputs/logs/.gitkeep
 
 # Local AutoDock Vina binary (download from GitHub releases)
-tools/vina
-tools/vina.exe
+tools/*.exe
 
 # OS / IDE
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
-
-# Tools and Executables
-tools/*.exe
 
 # Cursor AI / IDE Configs
 .cursor/*
