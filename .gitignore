@@ -42,3 +42,9 @@ tools/vina.exe
 Thumbs.db
 .idea/
 .vscode/
+
+# Tools and Executables
+tools/*.exe
+
+# Cursor AI / IDE Configs
+.cursor/
