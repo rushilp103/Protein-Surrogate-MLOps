@@ -2,6 +2,12 @@
 
 XGBoost surrogate model that predicts AutoDock Vina docking scores from AlphaFold-derived structural and biochemical features.
 
+## Executive Summary
+
+Developed a Dockerized machine learning MLOps pipeline that integrates AlphaFold protein structures, OpenMM energy minimization, and AutoDock Vina simulations to predict molecular docking scores for protein variants.
+
+This project engineers structural and biochemical features from 3D protein models, trains an interpretable XGBoost surrogate model to bypass computationally expensive docking workflows, and evaluates model generalization using residue-position grouped cross-validation with SHAP-based interpretations.
+
 ## Environment
 
 All project work **must** use an activated `protein` conda environment (do not run with system Python or a bare `python.exe` path without activation — activation supplies `Library\bin` on `PATH` for native DLLs such as `libiomp5md.dll`):
@@ -51,12 +57,15 @@ conda activate protein
 python -m src.pipeline configs/egfr.yaml
 ```
 
-Useful flags:
+Useful flag:
 
-- `--skip-download` — reuse existing WT / ligand files under `data/raw`
 - `--force` — regenerate mutants and docking even if outputs exist
 
 ### Step-by-step
+
+**Step 1 — Scaffolding and configuration** (already done in this repo)
+
+Clone / open the project, activate `protein`, install deps, and use `configs/egfr.yaml` (paths, docking box, mutation list, training keys). No separate command — this is the checked-in layout under `src/`, `configs/`, `data/*/`, `models/`, and `outputs/*/`.
 
 **Step 2 — Wild-type preparation**
 
@@ -93,7 +102,7 @@ python -m src.features configs/egfr.yaml
 
 Output: `data/processed/features.csv`.
 
-**Step 5 / 7 — Train surrogate**
+**Step 5 — Train surrogate**
 
 ```bash
 python -m src.train configs/egfr.yaml
@@ -125,6 +134,39 @@ Outputs:
 4. `tools/vina.exe`
 
 Windows: download from [AutoDock-Vina releases](https://github.com/ccsb-scripps/AutoDock-Vina/releases), rename to `vina.exe`, place under `tools/`.
+
+---
+
+## Results
+
+EGFR + Gefitinib macro set (`n=100` mutations, GroupShuffleSplit hold-out `n=21`). Labels span only ~2.1 kcal/mol (`vina` std ≈ 0.31); hold-out predictions collapse near −7.3.
+
+| Metric | Value |
+| --- | --- |
+| Hold-out R² | −0.18 |
+| Hold-out RMSE / MAE | 0.28 / 0.21 |
+| Pred vs actual std (hold-out) | 0.04 vs 0.27 |
+| Best CV RMSE | 0.36 |
+| Best params | `learning_rate=0.01`, `max_depth=4`, `n_estimators=100` |
+
+**Hold-out actual vs predicted** — points form a near-horizontal band (model barely moves while Vina does):
+
+![Hold-out actual vs predicted](outputs/figures/holdout_actual_vs_predicted.png)
+
+**Feature ↔ target (Spearman ρ vs `vina_score`)** — weak linear signal; best single feature is `dist_to_ligand` (ρ ≈ 0.22, r² ≈ 0.07):
+
+![Feature-target correlations](outputs/figures/feature_target_correlations.png)
+
+**XGBoost feature importances (gain)** — `dist_to_pocket` dominates; `delta_charge` is unused:
+
+![Feature importances](outputs/figures/feature_importances.png)
+
+**Diagnosis Takeaways & Scientific Post-Mortem:**
+
+* **The Geometry Signal is Real:** `dist_to_pocket` and `dist_to_ligand` are true geometric drivers (partial r(pocket, vina | position) ≈ 0.25), proving the model learned spatial physics rather than just using residue index as a proxy.
+* **Vina's Electrostatic Blindspot:** `delta_charge` was completely ignored by the model (SHAP = 0). This perfectly aligns with AutoDock Vina's known algorithmic limitations, as it relies heavily on steric/hydrophobic interactions and struggles with long-range electrostatics.
+* **The Same-Site Dilemma:** The model suffered from score compression because it lacked explicit 3D pharmacophore features (e.g., hydrogen bonding, steric clashes). Consequently, it struggled to differentiate between chemically distinct mutations occurring at the exact same spatial location.
+* **Conclusion:** The MLOps architecture functioned flawlessly, but the surrogate model's predictive ceiling (−0.18 R²) was artificially capped by the inherent noise of rigid-receptor docking labels. Upgrading the ground-truth signal to MM/GBSA or experimental wet-lab assays would immediately unlock the model's predictive power.
 
 ---
 
@@ -168,14 +210,36 @@ Compose mounts `models/`, `data/processed/`, and `configs/` read-only. Docs: htt
 
 ## Repository layout
 
+What GitHub shows (generated data, models, logs, and local binaries are gitignored; directories kept via `.gitkeep`):
+
 ```
-├── configs/           # YAML pipeline configs
-├── src/               # Offline pipeline + FastAPI inference
-├── data/              # raw / mutants / docking / processed
-├── models/            # trained artifacts
-├── outputs/           # metrics, figures, reports
-└── tests/
+├── configs/
+│   └── egfr.yaml
+├── src/                   # Offline pipeline + FastAPI inference
+├── tests/
+├── data/
+│   ├── raw/.gitkeep
+│   ├── mutants/.gitkeep
+│   ├── docking/.gitkeep
+│   └── processed/.gitkeep
+├── models/.gitkeep
+├── outputs/
+│   ├── figures/           # .gitkeep + README showcase PNGs
+│   ├── metrics/.gitkeep
+│   ├── reports/.gitkeep
+│   └── logs/.gitkeep
+├── tools/.gitkeep         # place vina.exe locally (gitignored)
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+├── requirements-api.txt
+├── find_center.py
+├── view_pocket.pml
+├── pytest.ini
+└── README.md
 ```
+
+Run the offline pipeline to populate `data/`, `models/`, and the rest of `outputs/`.
 
 ## Tests
 

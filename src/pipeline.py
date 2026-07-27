@@ -34,11 +34,6 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Project root for resolving relative paths (default: cwd)",
     )
     parser.add_argument(
-        "--skip-download",
-        action="store_true",
-        help="Skip WT / ligand download if raw artifacts already exist",
-    )
-    parser.add_argument(
         "--force",
         action="store_true",
         help="Recompute mutants / docking even when outputs already exist",
@@ -53,11 +48,8 @@ def main(argv: list[str] | None = None) -> int:
     n_mut = len(config["mutations"])
     print(f"offline pipeline: {n_mut} mutations from {args.config}", flush=True)
 
-    if not args.skip_download:
-        print("=== Step 2: download / prepare WT + ligand ===", flush=True)
-        prepare_wildtype(config, root=root)
-    else:
-        print("=== Step 2: skipped (--skip-download) ===", flush=True)
+    print("=== Step 2: download / prepare WT + ligand ===", flush=True)
+    prepare_wildtype(config, root=root)
 
     print("=== Step 3a: OpenMM mutate + minimize ===", flush=True)
     generate_mutants(config, root=root, force=args.force)
@@ -68,7 +60,7 @@ def main(argv: list[str] | None = None) -> int:
     print("=== Step 4: feature extraction ===", flush=True)
     build_feature_store(config, root=root)
 
-    print("=== Step 5/7: train surrogate ===", flush=True)
+    print("=== Step 5: train surrogate ===", flush=True)
     artifacts = run_training(config, root=root)
     for key, path in artifacts.items():
         print(f"{key}: {path}", flush=True)
