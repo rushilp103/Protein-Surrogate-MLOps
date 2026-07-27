@@ -118,7 +118,7 @@ def create_app(
         yield
 
     app = FastAPI(
-        title="Protein Surrogate ML API",
+        title="Protein Surrogate MLOps API",
         description=(
             "Predict AutoDock Vina docking scores from precomputed structural "
             "features using a trained XGBoost surrogate."

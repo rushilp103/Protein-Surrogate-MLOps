@@ -1,4 +1,4 @@
-# Protein-Surrogate-ML
+# Protein-Surrogate-MLOps
 
 XGBoost surrogate model that predicts AutoDock Vina docking scores from AlphaFold-derived structural and biochemical features.
 

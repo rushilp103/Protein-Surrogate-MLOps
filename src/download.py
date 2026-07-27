@@ -23,7 +23,7 @@ ALPHAFOLD_API = "https://alphafold.ebi.ac.uk/api/prediction/{uniprot_id}"
 ALPHAFOLD_FILE = "https://alphafold.ebi.ac.uk/files/{alphafold_id}-model_{version}.pdb"
 ALPHAFOLD_VERSIONS = ("v6", "v4", "v3", "v2", "v1")
 PUBCHEM_SDF = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{cid}/SDF"
-USER_AGENT = "Protein-Surrogate-ML/0.1 (research; WT preparation)"
+USER_AGENT = "Protein-Surrogate-MLOps/0.1 (research; WT preparation)"
 
 STANDARD_AMINO_ACIDS = frozenset(
     {
