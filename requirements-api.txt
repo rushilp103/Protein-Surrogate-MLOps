@@ -1,12 +1,13 @@
 # Inference-only dependencies for the Dockerized FastAPI service.
-# OpenMM, PDBFixer, AutoDock Vina, RDKit, FreeSASA, and MDTraj are excluded
-# so the image stays lightweight (<500MB goal).
+# OpenMM, PDBFixer, AutoDock Vina, RDKit, FreeSASA, and related physics
+# tooling are excluded so the image stays lightweight (<500MB goal).
 
-fastapi
-uvicorn[standard]
-pydantic
-pandas
-numpy
-scikit-learn
-xgboost
-shap
+fastapi==0.140.0
+uvicorn[standard]==0.51.0
+pydantic==2.13.4
+pandas==3.0.3
+numpy==2.4.6
+scipy==1.18.0
+scikit-learn==1.9.0
+xgboost==3.3.0
+shap==0.52.0

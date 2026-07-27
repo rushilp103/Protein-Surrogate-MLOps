@@ -197,7 +197,7 @@ Optional env overrides: `MODEL_PATH`, `FEATURES_PATH`.
 
 ### Docker (inference-only)
 
-Installs `requirements-api.txt` only (FastAPI, XGBoost, SHAP, pandas):
+Installs `requirements-api.txt` only (FastAPI, uvicorn, XGBoost, SHAP, pandas/numpy/scipy/sklearn):
 
 ```bash
 # from repo root, after training
